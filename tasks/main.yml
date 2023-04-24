@@ -1,2 +1,53 @@
 ---
 # tasks file for rabbitmq
+
+- name: "Install pre-req"
+  apt:
+    package:
+      - gnupg
+      - apt-transport-https
+    state: present
+
+- name: "Install Erlang packages & RabbitMQ"
+  apt:
+    package:
+      - erlang-base
+      - erlang-asn1
+      - erlang-crypto
+      - erlang-eldap
+      - erlang-ftp
+      - erlang-inets
+      - erlang-mnesia
+      - erlang-os-mon
+      - erlang-parsetools
+      - erlang-public-key
+      - erlang-runtime-tools
+      - erlang-snmp
+      - erlang-ssl
+      - erlang-syntax-tools
+      - erlang-tftp
+      - erlang-tools
+      - erlang-xmerl
+      - rabbitmq-server
+
+- name: "Start rabbitmq"
+  service:
+    name: rabbitmq-server
+    state: restarted
+    enabled: true
+
+- name: "Enable rabbitmq management plugin"
+  rabbitmq_plugin:
+    name: rabbitmq_management
+    state: enabled
+
+- name: "Create rabbitmq user"
+  rabbitmq_user:
+    user: "admin"
+    password: "admin"
+    state: present
+    tags: administrator
+    vhost: /
+    configure_priv: .*
+    read_priv: .*
+    write_priv: .*
